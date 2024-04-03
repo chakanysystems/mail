@@ -1,10 +1,11 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::sync::{Arc};
-use tokio::sync::Mutex;
-use tauri::State;
+mod state;
+
+use tauri::{Manager, State};
 use nostr_sdk::prelude::*;
+use crate::state::NostrState;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -15,16 +16,17 @@ async fn main() -> Result<()> {
   let bech32_pubkey: String = my_keys.public_key().to_bech32()?;
   println!("Bech32 PubKey: {}", bech32_pubkey);
 
-  // Create new client
-  let client = Client::new(&my_keys);
-
-  client.add_relay("wss://relay.damus.io").await?;
-
-  client.connect().await;
-
   tauri::Builder::default()
     .invoke_handler(tauri::generate_handler![get_pubkey])
-    .manage(Arc::new(Mutex::new(client)))
+    .manage(NostrState(Default::default()))
+      .setup(|app| {
+        let handle = app.handle();
+        tauri::async_runtime::spawn(async move {
+           let nostr_state = handle.state::<NostrState>();
+           *nostr_state.0.lock().await = Client::new(&my_keys);
+        });
+        Ok(())
+      })
     .run(tauri::generate_context!())
     .expect("error while running tauri application");
   
@@ -32,8 +34,8 @@ async fn main() -> Result<()> {
 }
 
 #[tauri::command]
-async fn get_pubkey(state: State<'_, Arc<Mutex<Client>>>) -> Result<PublicKey, String> {
-  let client = state.lock().await;
+async fn get_pubkey(nostr: State<'_, NostrState>) -> Result<PublicKey, String> {
+  let client = nostr.0.lock().await;
   let signer = match client.signer().await {
     Ok(sig) => sig,
     Err(_e) => return Err("could not get signer".into()),

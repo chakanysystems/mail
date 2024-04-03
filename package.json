@@ -38,9 +38,6 @@
   },
   "type": "module",
   "dependencies": {
-    "@noble/ciphers": "^0.5.1",
-    "@nostr-dev-kit/ndk": "^2.5.1",
-    "@nostr-dev-kit/ndk-cache-dexie": "^2.2.8",
     "@tauri-apps/api": "^1.5.3",
     "nostr-tools": "^2.3.2"
   }

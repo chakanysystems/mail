@@ -2,7 +2,7 @@
   "$schema": "../node_modules/@tauri-apps/cli/schema.json",
   "build": {
     "beforeBuildCommand": "bun --bun run build",
-    "beforeDevCommand": "bun --bun run dev",
+    "beforeDevCommand": "bun run dev",
     "devPath": "http://localhost:5173",
     "distDir": "../build"
   },
@@ -29,7 +29,7 @@
         "icons/icon.icns",
         "icons/icon.ico"
       ],
-      "identifier": "com.tauri.dev",
+      "identifier": "systems.chakany.mail",
       "longDescription": "",
       "macOS": {
         "entitlements": null,

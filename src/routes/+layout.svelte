@@ -1,10 +1,7 @@
 <script lang="ts">
 	import '../app.css';
-	import { ndk } from '$lib/nostr';
-	import Avatar from '../components/Avatar.svelte';
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
-	localStorage.debug = 'ndk:*';
 
 	let publickey: string = '';
 	onMount(async () => {
@@ -24,7 +21,6 @@
 				<div>Contacts</div>
 			</div>
 			<div class="flex mt-auto">
-				<Avatar pubkey={publickey} />
 			</div>
 		</div>
 
