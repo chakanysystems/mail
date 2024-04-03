@@ -1,10 +1,11 @@
 <script lang="ts">
-	import '../app.css';
+	import '../app.pcss';
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/tauri';
 
 	let publickey: string = '';
 	onMount(async () => {
+		document.documentElement.classList.add('dark');
 		invoke('get_pubkey').then((k) => {
 			console.log('HOLY FUCKING SHIT THE KEY!!!!', k);
 		});
