@@ -7,7 +7,7 @@
 	onMount(async () => {
 		document.documentElement.classList.add('dark');
 		invoke('get_pubkey').then((k) => {
-			console.log('HOLY FUCKING SHIT THE KEY!!!!', k);
+			console.log('key from rust:', k);
 		});
 	});
 </script>
