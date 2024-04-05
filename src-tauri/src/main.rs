@@ -3,8 +3,11 @@
 
 mod state;
 
+use std::fs::create_dir_all;
+use std::path::PathBuf;
 use tauri::{Manager, State};
 use nostr_sdk::prelude::*;
+use nostr_sqlcipher::{SQLCipherDatabase};
 use crate::state::NostrState;
 
 #[tokio::main]
@@ -21,9 +24,20 @@ async fn main() -> Result<()> {
     .manage(NostrState(Default::default()))
       .setup(|app| {
         let handle = app.handle();
+        let dir_buf: PathBuf = handle.path_resolver().app_data_dir().expect("This shouldn't be none");
+        let cloned_dir_buf = dir_buf.clone();
+        create_dir_all(&cloned_dir_buf).expect("Could not create app data dir");
         tauri::async_runtime::spawn(async move {
-           let nostr_state = handle.state::<NostrState>();
-           *nostr_state.0.lock().await = Client::new(&my_keys);
+          let mut dir_buf = cloned_dir_buf;
+          if cfg!(debug_assertions) {
+            dir_buf.push("dev.db"); // use a different db for dev testing
+          } else {
+            dir_buf.push("stable.db");
+          }
+          let data_dir = dir_buf.to_str().unwrap();
+          let database = SQLCipherDatabase::open(data_dir, "PASSWORD".to_string()).await.unwrap();
+          let nostr_state = handle.state::<NostrState>();
+          *nostr_state.0.lock().await = ClientBuilder::default().signer(&my_keys).database(database).build();
         });
         Ok(())
       })
@@ -46,4 +60,43 @@ async fn get_pubkey(nostr: State<'_, NostrState>) -> Result<PublicKey, String> {
   };
 
   Ok(pubkey)
+}
+
+#[derive(Debug)]
+struct Contact {
+    name: String,
+    their_public_key: String,
+    their_shared_key: String,
+    our_shared_key: String,
+}
+
+fn get_contacts() -> Vec<Contact> {
+    let mut contacts: Vec<Contact> = Vec::new();
+    contacts.push(Contact {
+        name: "Jack Chakany".to_string(),
+        their_public_key: "".to_string(),
+        their_shared_key: "".to_string(),
+        our_shared_key: "".to_string()
+    });
+
+
+    return contacts
+}
+
+#[tauri::command]
+async fn publish_messsage(nostr: State<'_, NostrState>, to: Vec<String>, cc: Vec<String>, bcc: Vec<String>, subject: String, content: String, attachments: Vec<String>) -> Result<String, String> {
+    let client = nostr.0.lock().await;
+
+    for recipient in to.iter() {
+        // get contacts list
+    }
+
+    for recipient in cc.iter() {
+
+    }
+
+    for recipient in bcc.iter() {
+
+    }
+    Ok("F".into())
 }

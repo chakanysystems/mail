@@ -18,8 +18,9 @@ tauri-build = { version = "1.5.1", features = [] }
 serde_json = "1.0"
 serde = { version = "1.0", features = ["derive"] }
 tauri = { version = "1.6.1", features = [] }
-nostr-sdk = "0.29"
+nostr-sdk = { git = "https://github.com/chakanysystems/rust-nostr", rev = "709a6e7" }
 tokio = { version = "1", features = ["full"] }
+nostr-sqlcipher = { git = "https://github.com/chakanysystems/rust-nostr", rev = "709a6e7" }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem and the built-in dev server is disabled.
