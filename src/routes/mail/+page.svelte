@@ -1,6 +1,8 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
-	import { cn } from "$lib/utils";
-</script>
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
 
-<Button>Test Button</Button>
+	onMount(() => {
+		goto("/mail/inbox")
+	})
+</script>

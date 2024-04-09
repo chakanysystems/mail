@@ -41,6 +41,7 @@
     "@tauri-apps/api": "^1.5.3",
     "bits-ui": "^0.21.2",
     "clsx": "^2.1.0",
+    "lucide-svelte": "^0.365.0",
     "nostr-tools": "^2.3.2",
     "tailwind-merge": "^2.2.2",
     "tailwind-variants": "^0.2.1"
