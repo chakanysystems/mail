@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Button } from "$lib/components/ui/button";
-	import { cn } from "$lib/utils";
+	import MailTable from "$lib/components/mail-table/mail-table.svelte";
 </script>
 
-<Button>Test Button</Button>
+<MailTable />

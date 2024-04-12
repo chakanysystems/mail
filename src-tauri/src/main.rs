@@ -13,14 +13,14 @@ use crate::state::NostrState;
 #[tokio::main]
 async fn main() -> Result<()> {
   // Generate new random keys
-  let my_keys = Keys::generate();
+  let my_keys = Keys::new(SecretKey::parse("nsec1n7ellnaaephw70cmrlagjptyk3nsfktggup6k979hf2hkr5q7rnsd5c294").unwrap());
 
   // Show bech32 public key
   let bech32_pubkey: String = my_keys.public_key().to_bech32()?;
   println!("Bech32 PubKey: {}", bech32_pubkey);
 
   tauri::Builder::default()
-    .invoke_handler(tauri::generate_handler![get_pubkey])
+    .invoke_handler(tauri::generate_handler![get_pubkey, get_profile])
     .manage(NostrState(Default::default()))
       .setup(|app| {
         let handle = app.handle();
